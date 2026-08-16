@@ -2,7 +2,8 @@
 # Все зависимости (mia, модули db/auth) клонируются с GitHub при КАЖДОЙ сборке —
 # обновил код в репозитории, пересобрал образ, получил свежее.
 
-FROM python:3.10-slim
+# Python 3.11: требуется argenta-logging (>=3.11); mia поддерживает 3.10+
+FROM python:3.11-slim
 
 # Инструменты: git (клон репозиториев при сборке), curl (healthcheck)
 RUN apt-get update \
