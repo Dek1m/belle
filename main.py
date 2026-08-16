@@ -19,6 +19,11 @@ _ETC_BELLE = "/etc/belle"
 if os.path.isdir(_ETC_BELLE) and _ETC_BELLE not in sys.path:
     sys.path.insert(0, _ETC_BELLE)
 
+try:
+    from argenta_logging import setup_logging
+except ImportError:
+    setup_logging = None  # type: ignore[assignment]
+
 from app import BelleApp  # noqa: E402
 from config import BelleConfig  # noqa: E402
 
@@ -72,7 +77,12 @@ def main() -> None:
     """Config -> app -> server -> wait for signal."""
     config = BelleConfig.from_env()
 
-    logging.basicConfig(level=getattr(logging, config.log_level.upper(), logging.INFO))
+    # Используем argenta_logging для стандартизированного формата [ISO8601-UTC] [LEVEL] [service] message
+    if setup_logging is not None:
+        setup_logging(service="belle", level=config.log_level)
+    else:
+        # Fallback: пакет не установлен (локальная разработка)
+        logging.basicConfig(level=getattr(logging, config.log_level.upper(), logging.INFO))
 
     app = BelleApp(config)
 
