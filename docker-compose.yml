@@ -12,6 +12,9 @@ services:
     volumes:
       # Конфиги belle: config/ репозитория монтируется в /etc/belle (конфиг как код)
       - ./config:/etc/belle:ro
+      # Root CA Argenta — доверенный сертификат для SSL-соединения с postgres
+      # (обновляется при старте: update-ca-certificates в Dockerfile)
+      - ../postgres/certs/argentaca.crt:/usr/local/share/ca-certificates/argentaca.crt:ro
     depends_on:
       postgres:
         condition: service_healthy
