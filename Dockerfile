@@ -34,9 +34,13 @@ RUN pip install --no-cache-dir \
 ENV PYTHONPATH=/app/mia:/app
 ENV PYTHONUNBUFFERED=1
 
+# ── Root CA Argenta (публичный) — встроен в образ ────────────
+COPY certs/argentaca.crt /usr/local/share/ca-certificates/argentaca.crt
+RUN update-ca-certificates
+
 EXPOSE 8000
 
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 --start-period=20s \
     CMD curl -f http://localhost:8000/health || exit 1
 
-CMD ["python", "main.py"]
+CMD ["sh", "-c", "update-ca-certificates && exec python main.py"]
