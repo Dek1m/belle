@@ -14,3 +14,4 @@ venv/
 htmlcov/
 docs/
 *.log
+postgres/
