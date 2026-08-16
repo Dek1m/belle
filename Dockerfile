@@ -28,7 +28,8 @@ COPY . /app
 RUN pip install --no-cache-dir \
     git+https://github.com/Dek1m/argenta-logging.git \
     asyncpg \
-    pydantic
+    pydantic \
+    prometheus-client
 
 ENV PYTHONPATH=/app/mia:/app
 ENV PYTHONUNBUFFERED=1
