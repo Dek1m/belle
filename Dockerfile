@@ -23,8 +23,9 @@ RUN mkdir -p /app/modules \
 COPY . /app
 
 # ── Зависимости Python ──────────────────────────────────────
+# argenta-logging — внутренний пакет Argenta Team, ставится с GitHub
 RUN pip install --no-cache-dir \
-    argenta-logging \
+    git+https://github.com/Dek1m/argenta-logging.git \
     asyncpg \
     pydantic
 
