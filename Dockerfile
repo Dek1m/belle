@@ -34,6 +34,8 @@ RUN pip install --upgrade pip setuptools wheel \
 
 ENV PYTHONPATH=/app/mia:/app
 ENV PYTHONUNBUFFERED=1
+# Имя сервиса в логах: mia читает SERVICE_NAME при перетирании настройки логирования
+ENV SERVICE_NAME=belle
 
 COPY certs/argentaca.crt /usr/local/share/ca-certificates/argentaca.crt
 RUN update-ca-certificates
