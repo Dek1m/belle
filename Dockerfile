@@ -15,15 +15,10 @@ RUN pip install --no-cache-dir \
 RUN git clone --depth 1 https://github.com/Dek1m/mia.git /app/mia \
     && git clone --depth 1 https://github.com/Dek1m/shaltir.git /app/shaltir
 
-# Модули belle
+# Модули belle (только те, что грузит Application)
 RUN mkdir -p /app/modules \
     && git clone --depth 1 https://github.com/Dek1m/mia-db.git /app/modules/db \
     && git clone --depth 1 https://github.com/Dek1m/mia-auth.git /app/modules/auth \
-    && git clone --depth 1 https://github.com/Dek1m/mia-llm.git /app/modules/llm \
-    && git clone --depth 1 https://github.com/Dek1m/mia-apiproxy.git /app/modules/apiproxy \
-    && git clone --depth 1 https://github.com/Dek1m/mia-rest.git /app/modules/rest \
-    && git clone --depth 1 https://github.com/Dek1m/mia-cli.git /app/modules/cli \
-    && git clone --depth 1 https://github.com/Dek1m/mia-workspace.git /app/modules/workspace \
     && git clone --depth 1 https://github.com/Dek1m/mia-log.git /app/modules/log
 
 COPY . /app

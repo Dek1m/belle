@@ -1,13 +1,14 @@
-# Belle service — свой compose-файл (консолидируется корневым ~/app/docker-compose.yml)
+# Belle service — консолидируется корневым ~/app/docker-compose.yml
+# Воркер — тот же образ, команда shaltir. Модули только belle.
 services:
   belle:
-    build:
+    build: &belle_build
       context: .
       dockerfile: Dockerfile
     container_name: belle
     restart: unless-stopped
     env_file: .env
-    environment:
+    environment: &belle_env
       SHALTIR_REDIS_HOST: redis
       SHALTIR_REDIS_PORT: "6379"
       SHALTIR_REDIS_BROKER_DB: "0"
@@ -17,7 +18,6 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      # Конфиги belle: config/ репозитория монтируется в /etc/belle (конфиг как код)
       - ./config:/etc/belle:ro
     depends_on:
       postgres:
@@ -35,13 +35,42 @@ services:
         limits:
           memory: 512M
           cpus: "1.0"
-    logging:
+    logging: &belle_log
       driver: json-file
       options:
         max-size: "10m"
         max-file: "3"
 
-# Общая сеть для всех сервисов ~/app (belle + postgres в одной сети)
+  shaltir:
+    build: *belle_build
+    command: ["python", "-m", "shaltir", "worker"]
+    container_name: shaltir
+    restart: unless-stopped
+    init: true
+    env_file: .env
+    environment:
+      <<: *belle_env
+      SHALTIR_INCLUDE: core.dispatch.tasks
+    depends_on:
+      belle:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "grep -qa shaltir /proc/1/cmdline"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          memory: 768M
+          cpus: "1.0"
+    logging: *belle_log
+
 networks:
   default:
     name: app-net
