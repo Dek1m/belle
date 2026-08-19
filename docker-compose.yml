@@ -7,6 +7,13 @@ services:
     container_name: belle
     restart: unless-stopped
     env_file: .env
+    environment:
+      SHALTIR_REDIS_HOST: redis
+      SHALTIR_REDIS_PORT: "6379"
+      SHALTIR_REDIS_BROKER_DB: "0"
+      SHALTIR_REDIS_BACKEND_DB: "1"
+      SHALTIR_CELERY_QUEUE: mia
+      PYTHONPATH: /app/mia:/app
     ports:
       - "8000:8000"
     volumes:
@@ -14,6 +21,8 @@ services:
       - ./config:/etc/belle:ro
     depends_on:
       postgres:
+        condition: service_healthy
+      redis:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]

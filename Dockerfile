@@ -1,40 +1,45 @@
 # Belle — AI-ассистент на фреймворке mia.
-# Все зависимости (mia, модули db/auth) клонируются с GitHub при КАЖДОЙ сборке —
-# обновил код в репозитории, пересобрал образ, получил свежее.
-
-# Python 3.11: требуется argenta-logging (>=3.11); mia поддерживает 3.10+
 FROM python:3.11-slim
 
-# Инструменты: git (клон репозиториев при сборке), curl (healthcheck)
 RUN apt-get update \
     && apt-get install -y --no-install-recommends git curl ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-# ── Ядро mia ────────────────────────────────────────────────
-RUN git clone --depth 1 https://github.com/Dek1m/mia.git /app/mia
+# Логгер — публичный пакет, ставится через pip
+RUN pip install --no-cache-dir \
+    git+https://github.com/Dek1m/argenta-logging.git
 
-# ── Модули: db и auth ───────────────────────────────────────
+# Ядро mia + shaltir (клиент задач)
+RUN git clone --depth 1 https://github.com/Dek1m/mia.git /app/mia \
+    && git clone --depth 1 https://github.com/Dek1m/shaltir.git /app/shaltir
+
+# Модули belle
 RUN mkdir -p /app/modules \
     && git clone --depth 1 https://github.com/Dek1m/mia-db.git /app/modules/db \
-    && git clone --depth 1 https://github.com/Dek1m/mia-auth.git /app/modules/auth
+    && git clone --depth 1 https://github.com/Dek1m/mia-auth.git /app/modules/auth \
+    && git clone --depth 1 https://github.com/Dek1m/mia-llm.git /app/modules/llm \
+    && git clone --depth 1 https://github.com/Dek1m/mia-apiproxy.git /app/modules/apiproxy \
+    && git clone --depth 1 https://github.com/Dek1m/mia-rest.git /app/modules/rest \
+    && git clone --depth 1 https://github.com/Dek1m/mia-cli.git /app/modules/cli \
+    && git clone --depth 1 https://github.com/Dek1m/mia-workspace.git /app/modules/workspace \
+    && git clone --depth 1 https://github.com/Dek1m/mia-log.git /app/modules/log
 
-# ── Код belle (из build context) ─────────────────────────────
 COPY . /app
 
-# ── Зависимости Python ──────────────────────────────────────
-# argenta-logging — внутренний пакет Argenta Team, ставится с GitHub
-RUN pip install --no-cache-dir \
-    git+https://github.com/Dek1m/argenta-logging.git \
-    asyncpg \
-    pydantic \
-    prometheus-client
+RUN pip install --upgrade pip setuptools wheel \
+    && pip install --no-cache-dir \
+        "celery[redis]>=5.5,<6" \
+        "psycopg[binary,pool]>=3.2" \
+        cryptography \
+        pydantic prometheus-client argon2-cffi pyjwt httpx fastapi uvicorn \
+    && pip install --no-deps --no-cache-dir -e /app/shaltir \
+    && pip install --no-deps --no-cache-dir -e /app/mia
 
 ENV PYTHONPATH=/app/mia:/app
 ENV PYTHONUNBUFFERED=1
 
-# ── Root CA Argenta (публичный) — встроен в образ ────────────
 COPY certs/argentaca.crt /usr/local/share/ca-certificates/argentaca.crt
 RUN update-ca-certificates
 
