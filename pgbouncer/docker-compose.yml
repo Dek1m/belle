@@ -13,8 +13,12 @@ services:
     container_name: pgbouncer
     restart: unless-stopped
     env_file: .env
+    # Без entrypoint: он перезаписывает userlist в MD5 и ломает SCRAM к postgres
+    entrypoint: ["pgbouncer"]
+    command: ["/etc/pgbouncer/pgbouncer.ini"]
     volumes:
       - ./pgbouncer.ini:/etc/pgbouncer/pgbouncer.ini:ro
+      - ./userlist.txt:/etc/pgbouncer/userlist.txt:ro
     depends_on:
       postgres:
         condition: service_healthy
