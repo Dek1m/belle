@@ -1,5 +1,4 @@
-# Belle service — консолидируется корневым ~/app/docker-compose.yml
-# Воркер — тот же образ, команда shaltir. Модули только belle.
+# Belle + воркер. Консолидируется корневым ~/app/docker-compose.yml
 services:
   belle:
     build: &belle_build
@@ -9,11 +8,8 @@ services:
     restart: unless-stopped
     env_file: .env
     environment: &belle_env
-      SHALTIR_REDIS_HOST: redis
-      SHALTIR_REDIS_PORT: "6379"
-      SHALTIR_REDIS_BROKER_DB: "0"
-      SHALTIR_REDIS_BACKEND_DB: "1"
-      SHALTIR_CELERY_QUEUE: mia
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
       PYTHONPATH: /app/mia:/app
     ports:
       - "8000:8000"
@@ -41,25 +37,24 @@ services:
         max-size: "10m"
         max-file: "3"
 
-  shaltir:
+  worker:
     build: *belle_build
-    command: ["python", "-m", "shaltir", "worker"]
-    container_name: shaltir
+    command: ["python", "-m", "modules.worker"]
+    container_name: mia-worker
     restart: unless-stopped
     init: true
     env_file: .env
     environment:
       <<: *belle_env
-      SHALTIR_INCLUDE: core.dispatch.tasks
+      SERVICE_NAME: mia-worker
+      # WORKER_CONCURRENCY не задаём — берётся число ядер
     depends_on:
-      belle:
-        condition: service_healthy
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "grep -qa shaltir /proc/1/cmdline"]
+      test: ["CMD-SHELL", "grep -qa modules.worker /proc/1/cmdline || grep -qa celery /proc/1/cmdline"]
       interval: 30s
       timeout: 5s
       retries: 3

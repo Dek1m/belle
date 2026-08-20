@@ -7,21 +7,21 @@ RUN apt-get update \
 
 WORKDIR /app
 
-# Логгер — публичный пакет, ставится через pip
 RUN pip install --no-cache-dir \
     git+https://github.com/Dek1m/argenta-logging.git
 
-# Ядро mia + shaltir (клиент задач)
-RUN git clone --depth 1 https://github.com/Dek1m/mia.git /app/mia \
-    && git clone --depth 1 https://github.com/Dek1m/shaltir.git /app/shaltir
+# Ядро mia
+RUN git clone --depth 1 https://github.com/Dek1m/mia.git /app/mia
 
-# Модули belle (только те, что грузит Application)
+# Модули
 RUN mkdir -p /app/modules \
     && git clone --depth 1 https://github.com/Dek1m/mia-db.git /app/modules/db \
     && git clone --depth 1 https://github.com/Dek1m/mia-auth.git /app/modules/auth \
-    && git clone --depth 1 https://github.com/Dek1m/mia-log.git /app/modules/log
+    && git clone --depth 1 https://github.com/Dek1m/mia-log.git /app/modules/log \
+    && git clone --depth 1 https://github.com/Dek1m/mia-worker.git /app/mia/modules/worker \
+    && git clone --depth 1 https://github.com/Dek1m/mia-worker.git /app/modules/worker
 
-# Код belle — свежий клон с GitHub, не COPY с хоста
+# Код belle — свежий клон с GitHub
 ARG CACHEBUST=1
 RUN echo "$CACHEBUST" \
     && git clone --depth 1 https://github.com/Dek1m/belle.git /tmp/belle \
@@ -39,12 +39,10 @@ RUN pip install --upgrade pip setuptools wheel hatchling \
         "psycopg[binary,pool]>=3.2" \
         cryptography \
         pydantic prometheus-client argon2-cffi pyjwt httpx fastapi uvicorn \
-    && pip install --no-deps --no-cache-dir -e /app/shaltir \
     && pip install --no-deps --no-cache-dir -e /app/mia
 
 ENV PYTHONPATH=/app/mia:/app
 ENV PYTHONUNBUFFERED=1
-# Имя сервиса в логах: mia читает SERVICE_NAME при перетирании настройки логирования
 ENV SERVICE_NAME=belle
 
 EXPOSE 8000
