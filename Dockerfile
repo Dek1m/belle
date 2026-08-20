@@ -10,17 +10,16 @@ WORKDIR /app
 RUN pip install --no-cache-dir \
     git+https://github.com/Dek1m/argenta-logging.git
 
-# Ядро mia
-RUN git clone --depth 1 https://github.com/Dek1m/mia.git /app/mia
-
-# Все модули — в mia/modules, как db/auth/log (воркер такой же модуль)
-RUN git clone --depth 1 https://github.com/Dek1m/mia-db.git /app/mia/modules/db \
+# Свежие клоны ядра и модулей (CACHEBUST сбрасывает слой)
+ARG CACHEBUST=1
+RUN echo "$CACHEBUST" \
+    && git clone --depth 1 https://github.com/Dek1m/mia.git /app/mia \
+    && git clone --depth 1 https://github.com/Dek1m/mia-db.git /app/mia/modules/db \
     && git clone --depth 1 https://github.com/Dek1m/mia-auth.git /app/mia/modules/auth \
     && git clone --depth 1 https://github.com/Dek1m/mia-log.git /app/mia/modules/log \
     && git clone --depth 1 https://github.com/Dek1m/mia-worker.git /app/mia/modules/worker
 
-# Код belle — свежий клон с GitHub
-ARG CACHEBUST=1
+# Код belle
 RUN echo "$CACHEBUST" \
     && git clone --depth 1 https://github.com/Dek1m/belle.git /tmp/belle \
     && cp /tmp/belle/main.py /tmp/belle/app.py /tmp/belle/pyproject.toml /app/ \

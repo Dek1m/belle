@@ -54,7 +54,7 @@ services:
     env_file: .env
     environment:
       <<: *belle_env
-      # SERVICE_NAME из .env (belle) → логи/hostname belle-worker
+      SERVICE_NAME: belle-worker
       # WORKER_CONCURRENCY не задаём — берётся число ядер
     depends_on:
       pgbouncer:
