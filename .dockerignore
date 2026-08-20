@@ -4,3 +4,7 @@ __pycache__
 .env
 tests/
 README.md
+# Модули и ядро клонируются в Dockerfile с GitHub — хостовые копии не должны их затирать
+modules/
+mia/
+shaltir/
