@@ -42,7 +42,6 @@ class BelleApp:
             try:
                 self._app.load_module(module_name)
                 self._loaded_modules.append(module_name)
-                logger.info("Module loaded: %s", module_name)
             except Exception:
                 logger.exception("Failed to load module: %s", module_name)
                 raise
@@ -63,8 +62,9 @@ class BelleApp:
 
     def health(self) -> dict[str, object]:
         """Current status for healthcheck."""
+        ok = self.is_healthy()
         return {
-            "status": "ok",
+            "status": "ok" if ok else "unhealthy",
             "version": __version__,
             "modules": list(self._loaded_modules),
         }

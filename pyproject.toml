@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "belle"
 version = "0.1.0"
 description = "AI-ассистент на фреймворке mia: модульная архитектура, REST API, CLI"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 license = {text = "MIT"}
 authors = [{name = "Argenta Team"}]
 dependencies = [
@@ -17,7 +17,8 @@ dependencies = [
 dev = ["pytest>=7.0"]
 
 [tool.setuptools]
-packages = ["belle"]
+py-modules = ["app", "main"]
+packages = ["config"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

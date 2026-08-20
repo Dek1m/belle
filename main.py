@@ -31,6 +31,7 @@ logger = logging.getLogger(__name__)
 
 # HTTP response constants
 _RESPONSE_OK = 200
+_RESPONSE_UNHEALTHY = 503
 _RESPONSE_NOT_FOUND = 404
 _CONTENT_TYPE_JSON = "application/json"
 
@@ -43,7 +44,9 @@ class _HealthHandler(BaseHTTPRequestHandler):
 
     def do_GET(self) -> None:
         if self.path == "/health":
-            self._send_json(_RESPONSE_OK, self.belle_app.health())
+            body = self.belle_app.health()
+            code = _RESPONSE_OK if body.get("status") == "ok" else _RESPONSE_UNHEALTHY
+            self._send_json(code, body)
         else:
             self._send_json(_RESPONSE_NOT_FOUND, {"error": "not found"})
 
@@ -77,12 +80,19 @@ def main() -> None:
     """Config -> app -> server -> wait for signal."""
     config = BelleConfig.from_env()
 
+    # Чтобы mia LogModule не перетёр имя сервиса и уровень
+    os.environ.setdefault("SERVICE_NAME", "belle")
+    os.environ.setdefault("MIA_LOG_LEVEL", config.log_level)
+
     # Используем argenta_logging для стандартизированного формата [ISO8601-UTC] [LEVEL] [service] message
     if setup_logging is not None:
         setup_logging(service="belle", level=config.log_level)
     else:
         # Fallback: пакет не установлен (локальная разработка)
-        logging.basicConfig(level=getattr(logging, config.log_level.upper(), logging.INFO))
+        logging.basicConfig(
+            level=getattr(logging, config.log_level.upper(), logging.INFO),
+            format="[%(asctime)s] [%(levelname)s] [belle] %(message)s",
+        )
 
     app = BelleApp(config)
 
@@ -99,7 +109,6 @@ def main() -> None:
         signame = signal.Signals(sig).name
         logger.info("Received %s, shutting down...", signame)
         server.shutdown()
-        app.stop()
 
     signal.signal(signal.SIGINT, _shutdown)
     signal.signal(signal.SIGTERM, _shutdown)

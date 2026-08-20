@@ -45,4 +45,4 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 --start-period=20s \
     CMD curl -f http://localhost:8000/health || exit 1
 
-CMD ["sh", "-c", "update-ca-certificates && exec python main.py"]
+CMD ["python", "main.py"]
