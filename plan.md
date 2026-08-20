@@ -4,6 +4,7 @@
 **Сложность:** высокая  
 **Проекты:** belle (`Dek1m/belle`), mia (`Dek1m/mia`), mia-db (`Dek1m/mia-db` → `/home/opencode/projects/mia/modules/db`), mia-worker (`Dek1m/mia-worker` → `/home/opencode/projects/mia/modules/worker`), mia-workspace, mia-auth  
 **Рабочий файл плана:** `/home/opencode/projects/belle/plan.md`  
+**Связанный ADR-004:** `docs/adr/ADR-004-schema-apply-once.md` — системные схемы накатывает one-shot `migrate` под `pg_advisory_lock` на admin-DSN; воркеры только Python + пулы. Не смешивать с `mia.run`.  
 **Стандарты:**
 - `docs/CODING_STANDARD.md` (ООП, инкапсуляция, без секретов в логах)
 - `docs/DOCKER_COMPOSE_RULES.md` (сервисы, env, сети, лимиты)
