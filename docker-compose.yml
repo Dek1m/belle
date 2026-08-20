@@ -11,6 +11,7 @@ services:
       REDIS_HOST: redis
       REDIS_PORT: "6379"
       PYTHONPATH: /app/mia:/app
+      BELLE_MODULES_DIR: /app/mia/modules
       DB_HOST: pgbouncer
       DB_PORT: "6432"
       DB_NAME: belle

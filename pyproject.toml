@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "belle"
 version = "0.1.0"
-description = "AI-ассистент на фреймворке mia: модульная архитектура, REST API, CLI"
+description = "AI-ассистент на фреймворке mia: модульная архитектура, CLI"
 requires-python = ">=3.11"
 license = {text = "MIT"}
 authors = [{name = "Argenta Team"}]

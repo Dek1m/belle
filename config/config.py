@@ -61,6 +61,6 @@ class BelleConfig:
 
         return cls(
             health_port=int(_get("BELLE_HEALTH_PORT", "8000")),
-            modules_dir=_get("BELLE_MODULES_DIR", "modules"),
+            modules_dir=_get("BELLE_MODULES_DIR", "mia/modules"),
             log_level=_get("LOG_LEVEL", "INFO"),
         )

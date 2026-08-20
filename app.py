@@ -33,7 +33,7 @@ class BelleApp:
 
     def start(self) -> None:
         """Init: Application -> startup -> load modules."""
-        logger.info("Starting belle v%s", __version__)
+        logger.info("belle_starting", extra={"version": __version__})
 
         self._app = Application(modules_dir=self._config.modules_dir)
         self._app.startup()
@@ -43,20 +43,20 @@ class BelleApp:
                 self._app.load_module(module_name)
                 self._loaded_modules.append(module_name)
             except Exception:
-                logger.exception("Failed to load module: %s", module_name)
+                logger.exception("module_load_failed", extra={"module": module_name})
                 raise
 
-        logger.info("belle started. Modules: %s", self._loaded_modules)
+        logger.info("belle_started", extra={"modules": list(self._loaded_modules)})
 
     def stop(self) -> None:
         """Graceful shutdown."""
         if self._app is None:
             return
-        logger.info("Shutting down belle...")
+        logger.info("belle_shutting_down")
         self._app.shutdown()
         self._app = None
         self._loaded_modules.clear()
-        logger.info("belle stopped.")
+        logger.info("belle_stopped")
 
     # -- health --
 

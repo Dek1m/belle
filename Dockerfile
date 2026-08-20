@@ -13,13 +13,11 @@ RUN pip install --no-cache-dir \
 # Ядро mia
 RUN git clone --depth 1 https://github.com/Dek1m/mia.git /app/mia
 
-# Модули
-RUN mkdir -p /app/modules \
-    && git clone --depth 1 https://github.com/Dek1m/mia-db.git /app/modules/db \
-    && git clone --depth 1 https://github.com/Dek1m/mia-auth.git /app/modules/auth \
-    && git clone --depth 1 https://github.com/Dek1m/mia-log.git /app/modules/log \
-    && git clone --depth 1 https://github.com/Dek1m/mia-worker.git /app/mia/modules/worker \
-    && git clone --depth 1 https://github.com/Dek1m/mia-worker.git /app/modules/worker
+# Все модули — в mia/modules, как db/auth/log (воркер такой же модуль)
+RUN git clone --depth 1 https://github.com/Dek1m/mia-db.git /app/mia/modules/db \
+    && git clone --depth 1 https://github.com/Dek1m/mia-auth.git /app/mia/modules/auth \
+    && git clone --depth 1 https://github.com/Dek1m/mia-log.git /app/mia/modules/log \
+    && git clone --depth 1 https://github.com/Dek1m/mia-worker.git /app/mia/modules/worker
 
 # Код belle — свежий клон с GitHub
 ARG CACHEBUST=1
@@ -38,12 +36,13 @@ RUN pip install --upgrade pip setuptools wheel hatchling \
         "celery[redis]>=5.5,<6" \
         "psycopg[binary,pool]>=3.2" \
         cryptography \
-        pydantic prometheus-client argon2-cffi pyjwt httpx fastapi uvicorn \
+        pydantic prometheus-client argon2-cffi pyjwt httpx \
     && pip install --no-deps --no-cache-dir -e /app/mia
 
 ENV PYTHONPATH=/app/mia:/app
 ENV PYTHONUNBUFFERED=1
 ENV SERVICE_NAME=belle
+ENV BELLE_MODULES_DIR=/app/mia/modules
 
 EXPOSE 8000
 
