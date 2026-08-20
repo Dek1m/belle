@@ -48,13 +48,13 @@ services:
   worker:
     build: *belle_build
     command: ["python", "-m", "modules.worker"]
-    container_name: mia-worker
+    container_name: belle-worker
     restart: unless-stopped
     init: true
     env_file: .env
     environment:
       <<: *belle_env
-      SERVICE_NAME: mia-worker
+      # SERVICE_NAME из .env (belle) → логи/hostname belle-worker
       # WORKER_CONCURRENCY не задаём — берётся число ядер
     depends_on:
       pgbouncer:
