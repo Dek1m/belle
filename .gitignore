@@ -15,3 +15,5 @@ htmlcov/
 docs/
 *.log
 postgres/
+pgbouncer/userlist.txt
+pgbouncer/.env

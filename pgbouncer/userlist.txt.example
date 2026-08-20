@@ -1,0 +1,4 @@
+# Формат userlist PgBouncer. На сервере файл НЕ класть в git:
+# entrypoint edoburu дописывает строку из DB_USER/DB_PASSWORD в /etc/pgbouncer/userlist.txt.
+# Если понадобится руками: скопировать в userlist.txt и подставить пароль.
+"belle" "CHANGE_ME"

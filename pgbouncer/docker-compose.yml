@@ -1,0 +1,40 @@
+# PgBouncer. Отдельный стек рядом с postgres, не свалка в belle-compose.
+# На ai-t-01: ~/app/pgbouncer/ (ini + этот файл + .env).
+#
+# В корневой ~/app/docker-compose.yml добавить include (postgres не трогать):
+#   include:
+#     - ./postgres/docker-compose.yml
+#     - ./redis/docker-compose.yml
+#     - ./pgbouncer/docker-compose.yml
+#     - ./belle/docker-compose.yml
+services:
+  pgbouncer:
+    image: edoburu/pgbouncer:v1.25.2-p0
+    container_name: pgbouncer
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - ./pgbouncer.ini:/etc/pgbouncer/pgbouncer.ini:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "pg_isready", "-h", "127.0.0.1", "-p", "6432"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+          cpus: "0.5"
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  default:
+    name: app-net

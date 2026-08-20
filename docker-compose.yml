@@ -11,12 +11,19 @@ services:
       REDIS_HOST: redis
       REDIS_PORT: "6379"
       PYTHONPATH: /app/mia:/app
+      DB_HOST: pgbouncer
+      DB_PORT: "6432"
+      DB_NAME: belle
+      DB_ADMIN_HOST: postgres
+      DB_ADMIN_PORT: "5432"
+      # DB_SSL_MODE из .env: disable после pgbouncer; не хардкодить — пока ходим в postgres напрямую, оставить require/verify-full
+      DB_SSL_MODE: ${DB_SSL_MODE:-disable}
     ports:
       - "8000:8000"
     volumes:
       - ./config:/etc/belle:ro
     depends_on:
-      postgres:
+      pgbouncer:
         condition: service_healthy
       redis:
         condition: service_healthy
@@ -49,7 +56,7 @@ services:
       SERVICE_NAME: mia-worker
       # WORKER_CONCURRENCY не задаём — берётся число ядер
     depends_on:
-      postgres:
+      pgbouncer:
         condition: service_healthy
       redis:
         condition: service_healthy
