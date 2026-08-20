@@ -22,7 +22,7 @@ RUN echo "$CACHEBUST" \
 # Код belle
 RUN echo "$CACHEBUST" \
     && git clone --depth 1 https://github.com/Dek1m/belle.git /tmp/belle \
-    && cp /tmp/belle/main.py /tmp/belle/app.py /tmp/belle/pyproject.toml /app/ \
+    && cp /tmp/belle/main.py /tmp/belle/app.py /tmp/belle/migrate.py /tmp/belle/pyproject.toml /app/ \
     && cp -a /tmp/belle/config /app/config \
     && mkdir -p /app/certs \
     && cp /tmp/belle/certs/argentaca.crt /app/certs/argentaca.crt \

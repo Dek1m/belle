@@ -6,6 +6,7 @@ Wraps mia Application: loads modules, exposes health status.
 from __future__ import annotations
 
 import logging
+import os
 from core.application import Application
 
 from config import BelleConfig
@@ -45,6 +46,10 @@ class BelleApp:
             except Exception:
                 logger.exception("module_load_failed", extra={"module": module_name})
                 raise
+
+        if os.environ.get("MIA_SCHEMA_APPLY", "").strip().lower() == "on_start":
+            logger.warning("schema_apply_on_start")
+            self._app.apply_schemas()
 
         logger.info("belle_started", extra={"modules": list(self._loaded_modules)})
 

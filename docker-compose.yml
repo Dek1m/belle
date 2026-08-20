@@ -24,6 +24,8 @@ services:
     volumes:
       - ./config:/etc/belle:ro
     depends_on:
+      migrate:
+        condition: service_completed_successfully
       pgbouncer:
         condition: service_healthy
       redis:
@@ -45,6 +47,25 @@ services:
         max-size: "10m"
         max-file: "3"
 
+  migrate:
+    build: *belle_build
+    command: ["python", "migrate.py"]
+    container_name: belle-migrate
+    restart: "no"
+    env_file: .env
+    environment:
+      <<: *belle_env
+      MIA_DISPATCH: local
+      SERVICE_NAME: belle-migrate
+    volumes:
+      - ./config:/etc/belle:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      pgbouncer:
+        condition: service_healthy
+    logging: *belle_log
+
   worker:
     build: *belle_build
     command: ["python", "-m", "modules.worker"]
@@ -57,6 +78,8 @@ services:
       SERVICE_NAME: belle-worker
       # WORKER_CONCURRENCY не задаём — берётся число ядер
     depends_on:
+      migrate:
+        condition: service_completed_successfully
       pgbouncer:
         condition: service_healthy
       redis:
