@@ -22,8 +22,10 @@ services:
       MIA_REST_BIND: "true"
       MIA_REST_HOST: "0.0.0.0"
       MIA_REST_PORT: "8080"
-      # Origin страницы albedo (не belle). Dev = Vite. Prod = публичный URL SPA.
-      MIA_REST_SPA_ORIGINS: ${MIA_REST_SPA_ORIGINS:-http://localhost:5173}
+      # Origin страницы albedo (не belle). Тест: http://ai-t-01.atom.ui:5173
+      MIA_REST_SPA_ORIGINS: ${MIA_REST_SPA_ORIGINS:-http://ai-t-01.atom.ui:5173}
+      # HTTP-тест: __Host- не встанет без TLS. Прод с HTTPS — true.
+      MIA_REST_COOKIE_SECURE: ${MIA_REST_COOKIE_SECURE:-false}
     ports:
       - "8000:8000"
       - "8080:8080"
