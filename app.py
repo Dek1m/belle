@@ -46,7 +46,9 @@ class BelleApp:
                 self._app.load_module(module_name)
                 self._loaded_modules.append(module_name)
             except Exception:
-                logger.exception("module_load_failed", extra={"module": module_name})
+                logger.exception(
+                    "module_load_failed", extra={"module_name": module_name},
+                )
                 raise
 
         if os.environ.get("MIA_SCHEMA_APPLY", "").strip().lower() == "on_start":
