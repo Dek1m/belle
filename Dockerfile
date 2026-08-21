@@ -17,7 +17,11 @@ RUN echo "$CACHEBUST" \
     && git clone --depth 1 https://github.com/Dek1m/mia-db.git /app/mia/modules/db \
     && git clone --depth 1 https://github.com/Dek1m/mia-auth.git /app/mia/modules/auth \
     && git clone --depth 1 https://github.com/Dek1m/mia-log.git /app/mia/modules/log \
-    && git clone --depth 1 https://github.com/Dek1m/mia-worker.git /app/mia/modules/worker
+    && git clone --depth 1 https://github.com/Dek1m/mia-worker.git /app/mia/modules/worker \
+    && git clone --depth 1 https://github.com/Dek1m/mia-workspace.git /app/mia/modules/workspace \
+    && git clone --depth 1 https://github.com/Dek1m/mia-llm.git /app/mia/modules/llm \
+    && git clone --depth 1 https://github.com/Dek1m/mia-apiproxy.git /app/mia/modules/apiproxy \
+    && git clone --depth 1 https://github.com/Dek1m/mia-rest.git /app/mia/modules/rest
 
 # Код belle
 RUN echo "$CACHEBUST" \
@@ -36,12 +40,14 @@ RUN pip install --upgrade pip setuptools wheel hatchling \
         "psycopg[binary,pool]>=3.2" \
         cryptography \
         pydantic prometheus-client argon2-cffi pyjwt httpx \
+        "fastapi>=0.115" "uvicorn[standard]>=0.32" \
     && pip install --no-deps --no-cache-dir -e /app/mia
 
 ENV PYTHONPATH=/app/mia:/app
 ENV PYTHONUNBUFFERED=1
 ENV SERVICE_NAME=belle
 ENV BELLE_MODULES_DIR=/app/mia/modules
+ENV MIA_REST_BIND=false
 
 EXPOSE 8000
 

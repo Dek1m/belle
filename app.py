@@ -16,7 +16,9 @@ logger = logging.getLogger(__name__)
 __version__ = "0.1.0"
 
 # Modules loaded at startup
-_REQUIRED_MODULES: tuple[str, ...] = ("db", "auth")
+_REQUIRED_MODULES: tuple[str, ...] = (
+    "log", "db", "auth", "workspace", "llm", "apiproxy", "rest",
+)
 
 
 class BelleApp:
