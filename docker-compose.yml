@@ -26,11 +26,14 @@ services:
       MIA_REST_SPA_ORIGINS: ${MIA_REST_SPA_ORIGINS:-http://ai-t-01.atom.ui:5173}
       # HTTP-тест: __Host- не встанет без TLS. Прод с HTTPS — true.
       MIA_REST_COOKIE_SECURE: ${MIA_REST_COOKIE_SECURE:-false}
+      MIA_WORKER_MODULES: db,auth,workspace
+      WORKSPACE_FS_ROOT: /var/lib/albedo/workspaces
     ports:
       - "8000:8000"
       - "8080:8080"
     volumes:
       - ./config:/etc/belle:ro
+      - workspace-files:/var/lib/albedo/workspaces
     depends_on:
       migrate:
         condition: service_completed_successfully
@@ -85,6 +88,8 @@ services:
       <<: *belle_env
       SERVICE_NAME: belle-worker
       # WORKER_CONCURRENCY не задаём — берётся число ядер
+    volumes:
+      - workspace-files:/var/lib/albedo/workspaces
     depends_on:
       migrate:
         condition: service_completed_successfully
@@ -104,6 +109,9 @@ services:
           memory: 768M
           cpus: "1.0"
     logging: *belle_log
+
+volumes:
+  workspace-files:
 
 networks:
   default:
