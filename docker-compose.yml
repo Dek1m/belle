@@ -27,14 +27,12 @@ services:
       # HTTP-тест: __Host- не встанет без TLS. Прод с HTTPS — true.
       MIA_REST_COOKIE_SECURE: ${MIA_REST_COOKIE_SECURE:-false}
       MIA_WORKER_MODULES: db,auth,workspace
-      WORKSPACE_FS_ROOT: /var/lib/albedo/workspaces
       WORKSPACE_HOME_ROOT: /home
     ports:
       - "8000:8000"
       - "8080:8080"
     volumes:
       - ./config:/etc/belle:ro
-      - workspace-files:/var/lib/albedo/workspaces
       - user-homes:/home
     depends_on:
       migrate:
@@ -91,7 +89,6 @@ services:
       SERVICE_NAME: belle-worker
       # WORKER_CONCURRENCY не задаём — берётся число ядер
     volumes:
-      - workspace-files:/var/lib/albedo/workspaces
       - user-homes:/home
     depends_on:
       migrate:
@@ -114,7 +111,6 @@ services:
     logging: *belle_log
 
 volumes:
-  workspace-files:
   user-homes:
 
 networks:
