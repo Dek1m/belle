@@ -26,7 +26,7 @@ from config import BelleConfig
 log = logging.getLogger("migrate")
 
 _LOCK_KEY = "mia.schema.system"
-_MODULES: tuple[str, ...] = ("db", "auth")
+_MODULES: tuple[str, ...] = ("db", "auth", "llm")
 
 
 def _lock_conn(cfg: DatabaseConfig):
