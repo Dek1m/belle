@@ -26,7 +26,8 @@ from config import BelleConfig
 log = logging.getLogger("migrate")
 
 _LOCK_KEY = "mia.schema.system"
-_MODULES: tuple[str, ...] = ("db", "auth", "llm")
+# auth раньше admin: FK admin.* → auth.users/groups. workspace не нужен: user_dbname — python import.
+_MODULES: tuple[str, ...] = ("db", "auth", "llm", "admin")
 
 
 def _lock_conn(cfg: DatabaseConfig):
