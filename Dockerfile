@@ -21,7 +21,8 @@ RUN echo "$CACHEBUST" \
     && git clone --depth 1 https://github.com/Dek1m/mia-workspace.git /app/mia/modules/workspace \
     && git clone --depth 1 https://github.com/Dek1m/mia-llm.git /app/mia/modules/llm \
     && git clone --depth 1 https://github.com/Dek1m/mia-apiproxy.git /app/mia/modules/apiproxy \
-    && git clone --depth 1 https://github.com/Dek1m/mia-rest.git /app/mia/modules/rest
+    && git clone --depth 1 https://github.com/Dek1m/mia-rest.git /app/mia/modules/rest \
+    && git clone --depth 1 https://github.com/Dek1m/mia-admin.git /app/mia/modules/admin
 
 # Код belle
 RUN echo "$CACHEBUST" \
