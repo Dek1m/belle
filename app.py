@@ -17,7 +17,8 @@ __version__ = "0.1.0"
 
 # Modules loaded at startup
 _REQUIRED_MODULES: tuple[str, ...] = (
-    "log", "db", "auth", "workspace", "llm", "admin", "apiproxy", "rest",
+    "log", "db", "auth", "workspace", "llm", "fs", "notification",
+    "admin", "apiproxy", "rest",
 )
 
 

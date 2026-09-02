@@ -2,7 +2,7 @@
 FROM python:3.11-slim
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends git curl ca-certificates \
+    && apt-get install -y --no-install-recommends git curl ca-certificates passwd \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
@@ -22,7 +22,9 @@ RUN echo "$CACHEBUST" \
     && git clone --depth 1 https://github.com/Dek1m/mia-llm.git /app/mia/modules/llm \
     && git clone --depth 1 https://github.com/Dek1m/mia-apiproxy.git /app/mia/modules/apiproxy \
     && git clone --depth 1 https://github.com/Dek1m/mia-rest.git /app/mia/modules/rest \
-    && git clone --depth 1 https://github.com/Dek1m/mia-admin.git /app/mia/modules/admin
+    && git clone --depth 1 https://github.com/Dek1m/mia-admin.git /app/mia/modules/admin \
+    && git clone --depth 1 https://github.com/Dek1m/mia-fs.git /app/mia/modules/fs \
+    && git clone --depth 1 https://github.com/Dek1m/mia-notification.git /app/mia/modules/notification
 
 # Код belle
 RUN echo "$CACHEBUST" \
