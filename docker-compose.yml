@@ -26,8 +26,8 @@ services:
       MIA_REST_SPA_ORIGINS: ${MIA_REST_SPA_ORIGINS:-http://ai-t-01.atom.ui:5173}
       # HTTP-тест: __Host- не встанет без TLS. Прод с HTTPS — true.
       MIA_REST_COOKIE_SECURE: ${MIA_REST_COOKIE_SECURE:-false}
-      MIA_APIPROXY_WHITELIST: auth,workspace,llm,admin,fs,notification
-      MIA_WORKER_MODULES: db,auth,workspace,llm,admin
+      MIA_APIPROXY_WHITELIST: auth,workspace,llm,system,fs,notification
+      MIA_WORKER_MODULES: db,auth,workspace,llm,system
       WORKSPACE_HOME_ROOT: /home
     ports:
       - "8000:8000"
@@ -90,7 +90,7 @@ services:
       SERVICE_NAME: belle-worker
       # WORKER_CONCURRENCY не задаём — берётся число ядер
       # fs + notification: дисковые RPC и уведомления share_add (ADR-002 §15, ADR-003 §14)
-      MIA_WORKER_MODULES: db,auth,workspace,llm,admin,fs,notification
+      MIA_WORKER_MODULES: db,auth,workspace,llm,system,fs,notification
       FS_HOME_ROOT: /home
     volumes:
       - user-homes:/home

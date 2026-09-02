@@ -11,6 +11,7 @@ RUN pip install --no-cache-dir \
     git+https://github.com/Dek1m/argenta-logging.git
 
 # Свежие клоны ядра и модулей (CACHEBUST сбрасывает слой)
+# TODO Рэй: gh repo rename Dek1m/mia-admin → mia-system, URL → mia-system.git
 ARG CACHEBUST=1
 RUN echo "$CACHEBUST" \
     && git clone --depth 1 https://github.com/Dek1m/mia.git /app/mia \
@@ -22,7 +23,7 @@ RUN echo "$CACHEBUST" \
     && git clone --depth 1 https://github.com/Dek1m/mia-llm.git /app/mia/modules/llm \
     && git clone --depth 1 https://github.com/Dek1m/mia-apiproxy.git /app/mia/modules/apiproxy \
     && git clone --depth 1 https://github.com/Dek1m/mia-rest.git /app/mia/modules/rest \
-    && git clone --depth 1 https://github.com/Dek1m/mia-admin.git /app/mia/modules/admin \
+    && git clone --depth 1 https://github.com/Dek1m/mia-admin.git /app/mia/modules/system \
     && git clone --depth 1 https://github.com/Dek1m/mia-fs.git /app/mia/modules/fs \
     && git clone --depth 1 https://github.com/Dek1m/mia-notification.git /app/mia/modules/notification
 
