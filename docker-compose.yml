@@ -88,6 +88,9 @@ services:
       <<: *belle_env
       SERVICE_NAME: belle-worker
       # WORKER_CONCURRENCY не задаём — берётся число ядер
+      # fs + notification: дисковые RPC и уведомления share_add (ADR-002 §15, ADR-003 §14)
+      MIA_WORKER_MODULES: db,auth,workspace,llm,admin,fs,notification
+      FS_HOME_ROOT: /home
     volumes:
       - user-homes:/home
     depends_on:
