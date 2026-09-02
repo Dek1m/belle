@@ -26,8 +26,10 @@ from config import BelleConfig
 log = logging.getLogger("migrate")
 
 _LOCK_KEY = "mia.schema.system"
-# auth раньше admin: FK admin.* → auth.users/groups. workspace не нужен: user_dbname — python import.
-_MODULES: tuple[str, ...] = ("db", "auth", "llm", "admin")
+# auth раньше admin и fs: FK admin.* и fs.nodes/fs.acl → auth.users/groups.
+# notification после fs (ADR-003 §13.3): FK только на auth.users, слот — под
+# сценарий share_grant (схема-потребитель рядом со схемой-источником).
+_MODULES: tuple[str, ...] = ("db", "auth", "llm", "fs", "notification", "admin")
 
 
 def _lock_conn(cfg: DatabaseConfig):
