@@ -26,10 +26,23 @@ from config import BelleConfig
 log = logging.getLogger("migrate")
 
 _LOCK_KEY = "mia.schema.system"
-# auth раньше system и fs: FK system.* и fs.nodes/fs.acl → auth.users/groups.
-# notification после fs (ADR-003 §13.3): FK только на auth.users, слот — под
-# сценарий share_grant (схема-потребитель рядом со схемой-источником).
-_MODULES: tuple[str, ...] = ("db", "auth", "llm", "fs", "notification", "system")
+# rest — HTTP binder, apiproxy — API binder, worker — celery. Не грузить в migrate.
+_BINDERS = frozenset({"rest", "apiproxy", "worker"})
+
+
+def schema_modules(registry: object) -> list[str]:
+    """discover+topo: ядро схем. Без example, без HTTP/celery binder."""
+    discover = getattr(registry, "discover_and_sort")
+    read_meta = getattr(registry, "read_meta")
+    names: list[str] = []
+    for name in discover():
+        if name in _BINDERS:
+            continue
+        meta = read_meta(name)
+        if getattr(meta, "is_example", False):
+            continue
+        names.append(name)
+    return names
 
 
 def _lock_conn(cfg: DatabaseConfig):
@@ -62,14 +75,14 @@ def main() -> None:
         logging.basicConfig(level=logging.INFO)
 
     db_cfg = DatabaseConfig.from_env()
-    log.info(
-        "migrate_start",
-        extra={"modules": list(_MODULES), "database": db_cfg.database},
-    )
-
     app = Application(modules_dir=belle_cfg.modules_dir)
     app.startup()
-    for name in _MODULES:
+    names = schema_modules(app.modules)
+    log.info(
+        "migrate_start",
+        extra={"modules": names, "database": db_cfg.database},
+    )
+    for name in names:
         app.load_module(name)
 
     conn = _lock_conn(db_cfg)
