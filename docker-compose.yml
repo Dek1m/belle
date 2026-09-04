@@ -29,6 +29,7 @@ services:
       MIA_REST_SPA_ORIGINS: ${MIA_REST_SPA_ORIGINS:-http://ai-t-01.atom.ui:5173}
       # HTTP-тест: __Host- не встанет без TLS. Прод с HTTPS — true.
       MIA_REST_COOKIE_SECURE: ${MIA_REST_COOKIE_SECURE:-false}
+      MIA_REST_MAX_BODY_BYTES: "${MIA_REST_MAX_BODY_BYTES:-16777216}"
       SERVICE_NAME: belle
       WORKSPACE_HOME_ROOT: /home
       TERM_HOME_ROOT: /home
