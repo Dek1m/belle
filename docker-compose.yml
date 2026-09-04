@@ -21,7 +21,10 @@ services:
       DB_SSL_MODE: ${DB_SSL_MODE:-disable}
       MIA_REST_BIND: "true"
       MIA_REST_HOST: "0.0.0.0"
-      MIA_REST_PORT: "8080"
+      MIA_REST_PORT: "${MIA_REST_PORT:-8080}"
+      LOG_LEVEL: "${LOG_LEVEL:-INFO}"
+      DB_POOL_MIN: "${DB_POOL_MIN:-1}"
+      DB_POOL_MAX: "${DB_POOL_MAX:-2}"
       # Origin страницы albedo (не belle). Тест: http://ai-t-01.atom.ui:5173
       MIA_REST_SPA_ORIGINS: ${MIA_REST_SPA_ORIGINS:-http://ai-t-01.atom.ui:5173}
       # HTTP-тест: __Host- не встанет без TLS. Прод с HTTPS — true.
