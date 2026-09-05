@@ -33,9 +33,8 @@ services:
       SERVICE_NAME: belle
       WORKSPACE_HOME_ROOT: /home
       TERM_HOME_ROOT: /home
-    ports:
-      - "8000:8000"
-      - "8080:8080"
+    # Порты НЕ публикуем: belle доступен только внутри app-net (nginx albedo → belle:8080).
+    # Healthcheck — внутренний curl localhost:8000, публикация не нужна.
     volumes:
       - ./config:/etc/belle:ro
       - user-homes:/home
